@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Control ESP32 MQTT</title>
+
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+<style>
+
+body{
+font-family: Arial;
+text-align:center;
+margin-top:50px;
+}
+
+button{
+padding:15px;
+margin:10px;
+font-size:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Control ESP32 IoT</h1>
+
+<button onclick="encender()">ON</button>
+<button onclick="apagar()">OFF</button>
+<button onclick="blink()">BLINK</button>
+
+<h2>Estado del LED</h2>
+
+<div id="status">Sin datos</div>
+
+<script>
+
+const client = mqtt.connect("wss://test.mosquitto.org:8081");
+
+client.on("connect", function () {
+
+  console.log("Conectado al broker MQTT");
+
+  client.subscribe("iot/equipo3/led/status");
+
+});
+
+client.on("message", function (topic, message) {
+
+  document.getElementById("status").innerText = message.toString();
+
+});
+
+function encender(){
+
+client.publish("iot/equipo3/led/control","ON");
+
+}
+
+function apagar(){
+
+client.publish("iot/equipo3/led/control","OFF");
+
+}
+
+function blink(){
+
+client.publish("iot/equipo3/led/control","BLINK:500");
+
+}
+
+</script>
+
+</body>
+</html>
